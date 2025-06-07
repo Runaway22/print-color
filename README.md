@@ -55,6 +55,10 @@ black
   - bold
   - underline
   - blink
+- `time`
+  - Shows actual datetime
+- `threadNumber`
+  - Shows the number of the thread
 
 ### Installing
 
