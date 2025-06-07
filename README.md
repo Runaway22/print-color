@@ -59,7 +59,7 @@ black
 ### Installing
 
 ```shell
-pip3 install print-color
+pip install git+https://github.com/Runaway22/print-color.git
 ```
 
 ### Requirements
