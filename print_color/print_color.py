@@ -1,6 +1,9 @@
 import builtins
 import sys
 import typing
+from datetime import datetime
+import threading
+
 
 __all__ = ["print"]
 
@@ -66,28 +69,23 @@ class PrintColor:
         format = self.kwargs.pop("format", None)
         tag = self.kwargs.pop("tag", None)
         tag_color = self.kwargs.pop("tag_color", None)
-        tag_format = self.kwargs.pop("tag_format", None)
         if not tag_color:
             tag_color = self.kwargs.pop("tag_colour", None)
         # file = self.kwargs.get('file', sys.stdout)
         result = "¬".join(str(arg) for arg in self.args)
 
         if color:
-            result = self.color(color) + result + self.end
-            if format:
-                result = self.format(format) + result
+            result = self.color(color) + result
 
         if tag:
-            tag = f"[{tag}]"
+            result = f"[{tag}] {result}"
             if tag_color:
-                tag = self.color(tag_color) + tag + self.end
-            if tag_format:
-                tag = self.format(tag_format) + tag
-            result = f"{tag} {result}"
+                result = self.color(tag_color) + result
         # result += self.end
         if back:
             builtins.print(self.background(back), file=sys.stdout, end="")
-
+        if format:
+            builtins.print(self.format(format), file=sys.stdout, end="")
         result += self.end
         builtins.print(*result.split("¬"), **self.kwargs)
 
@@ -119,7 +117,7 @@ Color = typing.Literal[
     "yellow",
     "red",
     "magenta",
-    "cyan",
+    "yan",
     "black",
     "white",
     "v",
@@ -161,8 +159,7 @@ _T_contra = typing.TypeVar("_T_contra", contravariant=True)
 
 
 class SupportsWrite(typing.Protocol[_T_contra]):
-    def write(self, __s: _T_contra) -> typing.Any:
-        ...
+    def write(self, __s: _T_contra) -> typing.Any: ...
 
 
 def print(
@@ -176,9 +173,24 @@ def print(
     format: Format = None,
     tag: str = None,
     tag_color: Color = None,
-    tag_format: Format = None,
+    time=True,
+    threadNumber=True,
     **kwargs,
 ):
+    parts = []
+
+    if time:
+        timestamp = datetime.now().strftime("[%H:%M:%S]")
+        parts.append(timestamp)
+
+    if threadNumber:
+        thread_name = threading.current_thread().name
+        parts.append(f"[{thread_name.replace("Thread","Task")}]")
+
+    if parts:
+        prefix = " ".join(parts)
+        values = (prefix, *values)
+
     printcolor = PrintColor(
         *values,
         sep=sep,
@@ -190,7 +202,6 @@ def print(
         format=format,
         tag=tag,
         tag_color=tag_color,
-        tag_format=tag_format,
         **kwargs,
     )
     printcolor.print()
