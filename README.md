@@ -16,6 +16,8 @@ Print Color is a minimalist approach to terminal color printing in Python. It is
 - `color` or `colour`
 - `background`
 - `format`
+- `time`
+- `threadNumber`
 
 It aims to be a customizable logger for your applications, and makes formatting warnings, info messages and errors a breeze.
 
@@ -56,9 +58,9 @@ black
   - underline
   - blink
 - `time`
-  - Shows actual datetime
+  - Boolean
 - `threadNumber`
-  - Shows the number of the thread
+  - Boolean
 
 ### Installing
 
